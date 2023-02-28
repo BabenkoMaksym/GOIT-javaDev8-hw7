@@ -1,5 +1,7 @@
 package ua.goit.java8.hw7;
 
+import ua.goit.java8.hw7.exceptions.ImageFromCodeNotFound;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -17,7 +19,12 @@ public class HttpStatusImageDownloader {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
-            InputStream inputStream = connection.getInputStream();
+            InputStream inputStream = null;
+            try {
+                inputStream = connection.getInputStream();
+            } catch (IOException ex) {
+                throw new ImageFromCodeNotFound("There is not image for HTTP status " + code);
+            }
             File file = new File("images/" + code + ".jpg");
             file.getParentFile().mkdirs();
             OutputStream writer = new FileOutputStream(file);
@@ -30,8 +37,9 @@ public class HttpStatusImageDownloader {
             writer.flush();
             writer.close();
             inputStream.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Image for code " + code + " downloaded successfully");
+        } catch (ImageFromCodeNotFound | IOException ex) {
+            ex.printStackTrace();
         }
 
     }
