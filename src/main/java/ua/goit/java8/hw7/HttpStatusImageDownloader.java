@@ -7,21 +7,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class HttpStatusImageDownloader {
-
-
-
-    public void downloadStatusImage(int code) {
+    public void downloadStatusImage(int code) throws ImageFromCodeNotFound {
         String urlStr = "https://http.cat/" + code;
         HttpURLConnection connection ;
 
         try {
             URL url = new URL(urlStr);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
             InputStream inputStream = null;
             try {
-                inputStream = connection.getInputStream();
+                inputStream = url.openStream();
             } catch (IOException ex) {
                 throw new ImageFromCodeNotFound("There is not image for HTTP status " + code);
             }
@@ -38,9 +32,8 @@ public class HttpStatusImageDownloader {
             writer.close();
             inputStream.close();
             System.out.println("Image for code " + code + " downloaded successfully");
-        } catch (ImageFromCodeNotFound | IOException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
-
     }
 }

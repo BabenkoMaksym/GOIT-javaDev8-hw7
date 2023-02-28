@@ -11,7 +11,6 @@ public class HttpImageStatusCli {
         Integer code = null;
         System.out.println("Enter HTTP status code");
 
-
         while (true) {
             try {
                 Scanner scanner = new Scanner(System.in);
@@ -21,8 +20,10 @@ public class HttpImageStatusCli {
                 break;
             } catch (InputMismatchException ex) {
                 System.out.println("Please enter valid number");
+            } catch (ImageFromCodeNotFound e) {
+                e.printStackTrace();
+                break;
             }
         }
-
     }
 }
